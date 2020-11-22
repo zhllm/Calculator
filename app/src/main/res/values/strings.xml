@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">Calculator</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_msg">Calculator Test</string>
+    <string name="title_info">title_info</string>
+    <string name="commin">Begin</string>
+    <string name="high_score_message">High Score:%d</string>
+    <string name="button0">0</string>
+    <string name="button1">1</string>
+    <string name="button2">2</string>
+    <string name="button3">3</string>
+    <string name="button4">4</string>
+    <string name="button5">5</string>
+    <string name="button6">6</string>
+    <string name="button7">7</string>
+    <string name="button8">8</string>
+    <string name="button9">9</string>
+    <string name="c">C</string>
+    <string name="done">OK</string>
+    <string name="text_title">问题</string>
+    <string name="input_indicator">"Your Answer: "</string>
+    <string name="sp_sym">\?</string>
+    <string name="img_des">images</string>
+    <string name="lost_msg">You Losed</string>
+    <string name="win_msg">You Win</string>
+    <string name="win_score">Your Score: %d</string>
+    <string name="lose_score">New Record: %d</string>
+    <string name="button_back_to_title">Back</string>
+</resources>

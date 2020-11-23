@@ -27,4 +27,10 @@
     <string name="win_score">Your Score: %d</string>
     <string name="lose_score">New Record: %d</string>
     <string name="button_back_to_title">Back</string>
+    <string name="todo">TODO</string>
+    <string name="current_score">Score %d</string>
+    <string name="answer_correct">Correct Go On!</string>
+    <string name="dialog_title">Are You Sure to quit</string>
+    <string name="dialog_positive_button">Ok</string>
+    <string name="dialog_positive_cancel">Cancel</string>
 </resources>

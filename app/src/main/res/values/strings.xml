@@ -33,4 +33,6 @@
     <string name="dialog_title">Are You Sure to quit</string>
     <string name="dialog_positive_button">Ok</string>
     <string name="dialog_positive_cancel">Cancel</string>
+    <string name="_1">1</string>
+    <string name="desc">desc</string>
 </resources>

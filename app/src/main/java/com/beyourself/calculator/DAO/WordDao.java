@@ -1,5 +1,6 @@
 package com.beyourself.calculator.DAO;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -26,5 +27,8 @@ public interface WordDao {
 
     @Query("SELECT * FROM WORD ORDER BY ID DESC")
     List<Word> getAllWords();
+
+    @Query("SELECT * FROM WORD ORDER BY ID DESC")
+    LiveData<List<Word>> getAllWordsLive();
 
 }

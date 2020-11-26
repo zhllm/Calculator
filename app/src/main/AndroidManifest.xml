@@ -10,7 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Calculator">
 
-        <activity android:name=".MainActivity_Room_Data_Base">
+        <activity
+            android:windowSoftInputMode="adjustNothing"
+            android:name=".MainActivity_Room_Data_Base">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

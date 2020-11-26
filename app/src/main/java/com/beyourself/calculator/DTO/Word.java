@@ -16,6 +16,16 @@ public class Word {
     @ColumnInfo(name = "chinese_meaning")
     private String chineseMeaning;
 
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
+
+    private boolean visible;
+
     public Word(String word, String chineseMeaning) {
         this.word = word;
         this.chineseMeaning = chineseMeaning;

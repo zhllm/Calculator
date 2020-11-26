@@ -18,6 +18,10 @@ public class WordViewModel extends AndroidViewModel {
         allWordsLive = wordRepository.getAllWordsList();
     }
 
+    public LiveData<List<Word>> getAllWordsLive() {
+        return allWordsLive;
+    }
+
     void insertWords(Word... word) {
         wordRepository.insertWords(word);
     }

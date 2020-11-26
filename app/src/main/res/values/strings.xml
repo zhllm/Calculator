@@ -35,4 +35,10 @@
     <string name="dialog_positive_cancel">Cancel</string>
     <string name="_1">1</string>
     <string name="desc">desc</string>
+    <string name="words">Words</string>
+    <string name="addWord">Add</string>
+    <string name="add_words">添加单词</string>
+    <string name="english_word">英语单词</string>
+    <string name="chinese_mesaning">中文含义</string>
+    <string name="add_words_button">添加</string>
 </resources>

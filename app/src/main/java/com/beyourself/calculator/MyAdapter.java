@@ -57,7 +57,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 Word word = (Word) holder.itemView.getTag(R.id.view_for_holder);
                 if (isChecked) {
-                    holder.textViewChinese.setVisibility(View.GONE);
+                    holder.textViewChinese.setVisibility(View.INVISIBLE);
                     word.setVisible(true);
                     wordViewModel.updateWords(word);
                 } else {
@@ -80,7 +80,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         holder.textViewEnglish.setText(word.getWord());
         holder.textViewChinese.setText(word.getChineseMeaning());
         if (word.isVisible()) {
-            holder.textViewChinese.setVisibility(View.GONE);
+            holder.textViewChinese.setVisibility(View.INVISIBLE);
             holder.aSwitch.setChecked(true);
         } else {
             holder.textViewChinese.setVisibility(View.VISIBLE);

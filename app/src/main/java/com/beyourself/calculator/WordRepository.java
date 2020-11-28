@@ -10,7 +10,7 @@ import com.beyourself.calculator.DTO.Word;
 
 import java.util.List;
 
-public class WordRepository  {
+public class WordRepository {
     private LiveData<List<Word>> allWordsList;
     private WordDao wordDao;
 
@@ -40,6 +40,25 @@ public class WordRepository  {
     void clearWords() {
         new ClearAsyncTask(wordDao).execute();
     }
+
+    public LiveData<List<Word>> findWordsWithPatten(String patten) {
+        return wordDao.findWordsWithPatten("%" + patten + "%");
+    }
+
+//    static class FindByEnglishAsyncTask extends AsyncTask<String, Void, Void> {
+//        final private WordDao wordDao;
+//
+//        public FindByEnglishAsyncTask(WordDao wordDao) {
+//            this.wordDao = wordDao;
+//        }
+//
+//
+//        @Override
+//        protected Void doInBackground(String strings) {
+//            wordDao.findWordsWithPatten("%"+strings+"%");
+//            return null;
+//        }
+//    }
 
 
     static class InsertAsyncTask extends AsyncTask<Word, Void, Void> {

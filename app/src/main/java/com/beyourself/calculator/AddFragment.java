@@ -43,6 +43,15 @@ public class AddFragment extends Fragment {
     }
 
     @Override
+    public void onStop() {
+        super.onStop();
+        InputMethodManager manager = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        manager.hideSoftInputFromWindow(
+                requireActivity().findViewById(R.id.fragment2).getWindowToken(),
+                0);
+    }
+
+    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         button = requireActivity().findViewById(R.id.button17);

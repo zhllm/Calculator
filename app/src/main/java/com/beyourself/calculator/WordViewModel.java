@@ -1,9 +1,12 @@
 package com.beyourself.calculator;
 
 import android.app.Application;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.room.Query;
+
 import com.beyourself.calculator.DTO.Word;
 
 import java.util.List;
@@ -38,4 +41,7 @@ public class WordViewModel extends AndroidViewModel {
         wordRepository.clearWords();
     }
 
+    public LiveData<List<Word>> findWordsWithPatten(String patten) {
+        return wordRepository.findWordsWithPatten(patten);
+    }
 }

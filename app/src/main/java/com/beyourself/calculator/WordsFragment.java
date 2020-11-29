@@ -15,6 +15,8 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -37,7 +39,7 @@ import java.util.List;
  * create an instance of this fragment.
  */
 public class WordsFragment extends Fragment {
-    private MyAdapter myAdapter1, myAdapter2;
+    private MyAdapter myAdapter_card, myAdapter_normal;
     private RecyclerView recyclerView;
     private FloatingActionButton button;
     private boolean fistOpen = true;
@@ -58,13 +60,13 @@ public class WordsFragment extends Fragment {
             case R.id.switch_view:
                 SharedPreferences shp = requireActivity()
                         .getSharedPreferences(VIEW_TYPE_SHP, Context.MODE_PRIVATE);
-                boolean viewType = shp.getBoolean(IS_USING_CARD_TYPE, false);
+                boolean is_card = shp.getBoolean(IS_USING_CARD_TYPE, false);
                 SharedPreferences.Editor editor = shp.edit();
-                if (viewType) {
-                    recyclerView.setAdapter(myAdapter1);
+                if (is_card) {
+                    recyclerView.setAdapter(myAdapter_normal);
                     editor.putBoolean(IS_USING_CARD_TYPE, false);
                 } else {
-                    recyclerView.setAdapter(myAdapter2);
+                    recyclerView.setAdapter(myAdapter_card);
                     editor.putBoolean(IS_USING_CARD_TYPE, true);
                 }
                 editor.apply();
@@ -117,15 +119,13 @@ public class WordsFragment extends Fragment {
                 String patten = newText.trim();
                 filterWords.removeObservers(requireActivity());
                 filterWords = wordViewModel.findWordsWithPatten(patten);
-                filterWords.observe(requireActivity(), new Observer<List<Word>>() {
+                filterWords.observe(getViewLifecycleOwner(), new Observer<List<Word>>() {
                     @Override
                     public void onChanged(List<Word> words) {
-                        int temp = myAdapter1.getItemCount();
-                        myAdapter1.setAllWords(words);
-                        myAdapter2.setAllWords(words);
-                        if (fistOpen || temp != myAdapter1.getItemCount()) {
-                            myAdapter2.notifyDataSetChanged();
-                            myAdapter1.notifyDataSetChanged();
+                        int temp = myAdapter_card.getItemCount();
+                        if (fistOpen || temp != myAdapter_card.getItemCount()) {
+                            myAdapter_normal.submitList(words);
+                            myAdapter_card.submitList(words);
                             fistOpen = false;
                         }
                     }
@@ -135,33 +135,50 @@ public class WordsFragment extends Fragment {
         });
     }
 
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         wordViewModel = new ViewModelProvider(requireActivity()).get(WordViewModel.class);
         recyclerView = requireActivity().findViewById(R.id.recycle_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireActivity()));
-        myAdapter1 = new MyAdapter(false, wordViewModel);
-        myAdapter2 = new MyAdapter(true, wordViewModel);
-
+        myAdapter_normal = new MyAdapter(false, wordViewModel);
+        myAdapter_card = new MyAdapter(true, wordViewModel);
+        recyclerView.setItemAnimator(new DefaultItemAnimator() {
+            @Override
+            public void onAnimationFinished(@NonNull RecyclerView.ViewHolder viewHolder) {
+                super.onAnimationFinished(viewHolder);
+                LinearLayoutManager manager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                if (manager != null) {
+                    int firstPosition = manager.findFirstVisibleItemPosition();
+                    int lastPosition = manager.findLastVisibleItemPosition();
+                    for (int i = firstPosition; i < lastPosition; i++) {
+                        MyAdapter.MyViewHolder holder = (MyAdapter.MyViewHolder) recyclerView
+                                .findViewHolderForAdapterPosition(i);
+                        if (holder != null) {
+                            holder.textViewIndex.setText(String.valueOf(i + 1));
+                        }
+                    }
+                }
+            }
+        });
         SharedPreferences shp = requireActivity()
                 .getSharedPreferences(VIEW_TYPE_SHP, Context.MODE_PRIVATE);
-        boolean viewType = shp.getBoolean(IS_USING_CARD_TYPE, false);
-        if (viewType) {
-            recyclerView.setAdapter(myAdapter2);
+        boolean is_card = shp.getBoolean(IS_USING_CARD_TYPE, false);
+        if (is_card) {
+            recyclerView.setAdapter(myAdapter_card);
         } else {
-            recyclerView.setAdapter(myAdapter1);
+            recyclerView.setAdapter(myAdapter_normal);
         }
         filterWords = wordViewModel.getAllWordsLive();
-        filterWords.observe(requireActivity(), new Observer<List<Word>>() {
+        filterWords.observe(getViewLifecycleOwner(), new Observer<List<Word>>() {
             @Override
             public void onChanged(List<Word> words) {
-                int temp = myAdapter1.getItemCount();
-                myAdapter1.setAllWords(words);
-                myAdapter2.setAllWords(words);
-                if (fistOpen || temp != myAdapter1.getItemCount()) {
-                    myAdapter2.notifyDataSetChanged();
-                    myAdapter1.notifyDataSetChanged();
+                int temp = words.size();
+                if (fistOpen || temp != myAdapter_normal.getItemCount()) {
+                    recyclerView.smoothScrollBy(0, -200);
+                    myAdapter_normal.submitList(words);
+                    myAdapter_card.submitList(words);
                     fistOpen = false;
                 }
             }
@@ -174,5 +191,30 @@ public class WordsFragment extends Fragment {
                 controller.navigate(R.id.action_wordsFragment_to_addFragment);
             }
         });
+
+        new ItemTouchHelper(new ItemTouchHelper.
+                SimpleCallback(0, ItemTouchHelper.START | ItemTouchHelper.END) {
+            @Override
+            public int getMovementFlags(
+                    @NonNull RecyclerView recyclerView,
+                    @NonNull RecyclerView.ViewHolder viewHolder
+            ) {
+                return 0;
+            }
+
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                List<Word> words = filterWords.getValue();
+                if (words != null) {
+                    Word deleteWord = filterWords.getValue().get(viewHolder.getAdapterPosition());
+                    wordViewModel.deleteWords(deleteWord);
+                }
+            }
+        }).attachToRecyclerView(recyclerView);
     }
 }

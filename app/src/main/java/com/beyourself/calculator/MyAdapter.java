@@ -11,6 +11,8 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.beyourself.calculator.DTO.Word;
@@ -18,18 +20,32 @@ import com.beyourself.calculator.DTO.Word;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
+public class MyAdapter extends ListAdapter<Word, MyAdapter.MyViewHolder> {
     boolean useCardView;
-    List<Word> allWords = new ArrayList<>();
     private WordViewModel wordViewModel;
 
-    public void setAllWords(List<Word> words) {
-        this.allWords = words;
-    }
-
     public MyAdapter(boolean useCardView, WordViewModel wordViewModel) {
+        super(new DiffUtil.ItemCallback<Word>() {
+            @Override
+            public boolean areItemsTheSame(@NonNull Word oldItem, @NonNull Word newItem) {
+                return oldItem.getId() == newItem.getId();
+            }
+
+            @Override
+            public boolean areContentsTheSame(@NonNull Word oldItem, @NonNull Word newItem) {
+                return
+                        oldItem.getWord().equals(newItem.getWord()) &&
+                                oldItem.getChineseMeaning().equals(newItem.getChineseMeaning());
+            }
+        });
         this.useCardView = useCardView;
         this.wordViewModel = wordViewModel;
+    }
+
+    @Override
+    public void onViewAttachedToWindow(@NonNull MyViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+        holder.textViewIndex.setText(String.valueOf(holder.getAdapterPosition() + 1));
     }
 
     @NonNull
@@ -74,7 +90,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        Word word = allWords.get(position);
+        Word word = getItem(position);
         holder.itemView.setTag(R.id.view_for_holder, word);
         holder.textViewIndex.setText(String.valueOf(position + 1));
         holder.textViewEnglish.setText(word.getWord());
@@ -86,11 +102,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
             holder.textViewChinese.setVisibility(View.VISIBLE);
             holder.aSwitch.setChecked(false);
         }
-    }
-
-    @Override
-    public int getItemCount() {
-        return allWords.size();
     }
 
     static class MyViewHolder extends RecyclerView.ViewHolder {
